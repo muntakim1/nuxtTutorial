@@ -1,7 +1,17 @@
 <template>
     <div>
         <SearchJokes v-on:search-text="searchText" />
-        <Joke v-for="joke in jokes" :key="joke.id" :id="joke.id" :joke="joke.joke"/>
+        <div v-if="this.jokes != ''">
+            <Joke v-for="joke in jokes" :key="joke.id" :id="joke.id" :joke="joke.joke"/>
+        </div>
+        <div v-else>
+            <br>
+
+            <h1>Try again</h1>
+            <p>"<strong>{{ text }}</strong>" not found in the server! :( 
+            </p>
+        </div>
+        
     </div>
 </template>
 
@@ -16,7 +26,9 @@ export default {
     },
     data(){
         return{
-            jokes:[]
+            jokes:[],
+            text:''
+            
         }
     },
     async created(){
@@ -44,10 +56,12 @@ export default {
         try {
              const res = await axios.get(`https://icanhazdadjoke.com/search?term=${text}`,config)
             this.jokes=res.data.results
+            this.text=text
             //console.log(this.jokes)
         } catch (error) {
             console.log(error)
         }
+        
         }
     },
     head(){
